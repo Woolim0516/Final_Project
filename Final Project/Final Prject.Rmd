@@ -5,10 +5,12 @@ date: "09/12/2020"
 output: pdf_document
 ---
 
-```{r}
+# Introduction
+
+```{r setup, include=TRUE, message=TRUE, warning=FALSE}
 library(dplyr)
 Data <- read.csv("COVID19 cases.csv")
 head(Data)
 ```
 
-Hihi testing testing
+
