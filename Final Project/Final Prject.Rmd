@@ -1,0 +1,13 @@
+---
+title: "Statistical Analysis of COVID-19 Cases In Toronto"
+author: "Woolim Kim"
+date: "09/12/2020"
+output: pdf_document
+---
+
+```{r}
+library(dplyr)
+Data <- read.csv("COVID19 cases.csv")
+head(Data)
+```
+
