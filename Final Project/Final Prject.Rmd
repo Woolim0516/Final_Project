@@ -1,13 +1,13 @@
 ---
 title: "Statistical Analysis of COVID-19 Cases In Toronto (Rough Draft)"
-author: "Woolim Kim"
+author: "Anonymous"
 date: "09/12/2020"
 output: pdf_document
 ---
 
 # Introduction
 Description
-Using ‘About COVID-19 Cases in Toronto’ data from the ‘Toronto Open Data’ website. The data contains gender, age group, source of infection, classification, etc. I want to create an analysis of this data to see how people mostly got infected, and what age group is most exposed to the viruses. I am also planning to find relationships between variable some of the variables that is important and interesting here but have not figure out how to do it. Most of the data is categorical variable so I will have to convert the variables to quantitative values.
+Using ‘About COVID-19 Cases in Toronto’ data from the ‘Toronto Open Data’ website. The data contains gender, age group, source of infection, classification, etc. I want to create an analysis of this data to see how people mostly got infected, and what age group is most exposed to the viruses. I am also planning to find relationships between variable some of the variables that is important and interesting here but have not figure out how to do it. Most of the data is categorical variable so I will have to convert the variables to quantitative values.I will use statistical methods I have learned in STA304 course and try to make it simple and well organized. 
 
 ```{r setup, include=TRUE, message=FALSE, warning=FALSE}
 library(dplyr)
