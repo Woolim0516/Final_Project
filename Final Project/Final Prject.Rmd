@@ -9,24 +9,124 @@ output: pdf_document
 Description
 Using ‘About COVID-19 Cases in Toronto’ data from the ‘Toronto Open Data’ website. The data contains gender, age group, source of infection, classification, etc. I want to create an analysis of this data to see how people mostly got infected, and what age group is most exposed to the viruses. I am also planning to find relationships between variable some of the variables that is important and interesting here but have not figure out how to do it. Most of the data is categorical variable so I will have to convert the variables to quantitative values.I will use statistical methods I have learned in STA304 course and try to make it simple and well organized. 
 
-```{r setup, include=TRUE, message=FALSE, warning=FALSE}
+```{r setup, include=FALSE, message=FALSE, warning=FALSE}
 library(dplyr)
 library(tidyverse)
+library(ggthemes)
+library(knitr)
+library(kableExtra)
 Data <- read_csv("COVID19 cases.csv")
-head(Data)
+
+reduced_data <- Data %>%
+  select('Age Group',
+         'Neighbourhood Name',
+         `Source of Infection`,
+          Classification,
+         'Episode Date',
+         'Reported Date',
+         'Client Gender',
+          Outcome,
+         'Currently Hospitalized')
+
+reduced_data <- reduced_data %>%
+  mutate(source_of_infection = case_when(`Source of Infection` =="Travel" ~ "Travel",
+                                         `Source of Infection` =="Unknown/Missing" ~ "Unknown",
+                                         `Source of Infection` =="N/A - Outbreak associated" ~ "N/A Outbreak associated",
+                                         `Source of Infection` =="Healthcare" ~ "Healthcare",
+                                         `Source of Infection` =="Community" ~ "Community",
+                                         `Source of Infection` =="Close contact" ~ "Close contact"))
+
+data <- reduced_data %>%
+  select('Age Group',
+         'Neighbourhood Name',
+         'Source of Infection',
+          Classification,
+         'Episode Date',
+         'Reported Date',
+         'Client Gender',
+          Outcome,
+         'Currently Hospitalized',
+          source_of_infection)
 ```
 
 
-```{r, include=TRUE, message=FALSE, warning=FALSE}
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+source <- table(data$source_of_infection)
 
+#Gender
+n <- length(data$`Client Gender`)
+gender <- data %>%
+  count(`Client Gender`)
 
-Data %>%
-  ggplot(mapping = aes(x = `Source of Infection`)) + geom_bar()
+data %>%
+  ggplot(mapping = aes(x = `Client Gender`, fill = `Client Gender`)) + geom_bar() + 
+  labs(title = "Gender ratio of infection",
+      x = "Gender",
+      y = "Count") + 
+  theme_clean()
+
+gender_ratio<- tibble(Gender = c("FEMALE", "MALE", "OTHER", "TRANSGENDER", "UNKNOWN"), 
+       percentage = c(23497/n*100, 22222/n*100, 13/n*100, 8/n*100, 363/n*100))
+
+knitr::kable(gender_ratio)
+
+#Source of Infection
+data %>%
+  ggplot(mapping = aes(x = source_of_infection, fill = source_of_infection)) + geom_bar() + 
+  labs(title = "Source of infection",
+      subtitle = "how people are exoposed to COVID-19 ",
+      x = "Source of infection",
+      y = "Count") + 
+  theme(axis.text.x = element_text(angle = 60, hjust=1))
+  
+
 
 ```
+
+
+
+
+```{r echo=FALSE, message= FALSE}
+#Date
+data %>%
+  ggplot(mapping = aes(x = `Reported Date`)) + geom_bar() + theme(axis.text.x = element_text(angle = 90, hjust=1)) + 
+  labs(title = "COVID-19 Trends In Toronto",
+      subtitle = "February to December",
+      x = "Date",
+      y = "Counts") +
+  theme_clean()
+
+```
+
+```{r echo=FALSE}
+#OUTcome
+
+data%>%
+  count(Outcome)
+Fatal <- c(5441/length(data$Outcome), 1672/length(data$Outcome), 38990/length(data$Outcome))
+outcom_ratio <- tibble(Outcome = c("Active", "Fatal", "Resolved"), Ratio = Fatal)
+
+ggplot(data = data, mapping = aes(x = Outcome, fill = Outcome)) + geom_bar() + theme_grey()
+#barplot(outcom_ratio$Ratio, main ="Outcome ratio", ylab = "ratio", xlab = "Active | Fatal | Resolved")
+knitr::kable(outcom_ratio)
+```
+
+
 
 Citation
 
 CSV Data:
 Open Data Dataset. (n.d.). Retrieved December 10, 2020, from https://open.toronto.ca/dataset/covid-19-cases-in-toronto/
 
+# Appendix
+
+```{r echo=FALSE, message=FALSE}
+#Neighbourhood
+Neighbourhood <- table(data$`Neighbourhood Name`)
+knitr::kable(list(Neighbourhood[c(0:30)]), caption = "Covid-19 cases in different neighbourhoods")  %>% kable_styling(font_size = 9, position = "left")
+knitr::kable(list(Neighbourhood[c(31:61)]), caption = "Covid-19 cases in different neighbourhoods")  %>% kable_styling(font_size = 9, position = "left")
+knitr::kable(list(Neighbourhood[c(62:92)]), caption = "Covid-19 cases in different neighbourhoods")  %>% kable_styling(font_size = 9, position = "left")
+knitr::kable(list(Neighbourhood[c(93:124)]), caption = "Covid-19 cases in different neighbourhoods")  %>% kable_styling(font_size = 9, position = "left")
+knitr::kable(list(Neighbourhood[c(124:140)]), caption = "Covid-19 cases in different neighbourhoods")  %>% kable_styling(font_size = 9, position = "left")
+
+```
