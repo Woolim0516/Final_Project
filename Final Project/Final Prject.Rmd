@@ -36,7 +36,7 @@ library(tidyverse)
 library(ggthemes)
 library(knitr)
 library(kableExtra)
-Data <- read_csv("COVID19 cases.csv")
+
 
 reduced_data <- Data %>%
   select('Age Group',
