@@ -1,7 +1,7 @@
 ---
-title: "Statistical Analysis of COVID-19 Cases In Toronto (Rough Draft)"
-author: "Anonymous"
-date: "09/12/2020"
+title: "Statistical Analysis of COVID-19 Cases In Toronto"
+author: "Woolim Kim (1004959495)"
+date: "21/12/2020"
 output: pdf_document
 ---
 
