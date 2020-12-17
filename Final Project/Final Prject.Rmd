@@ -5,11 +5,32 @@ date: "09/12/2020"
 output: pdf_document
 ---
 
-# Introduction
-Description
-Using ‘About COVID-19 Cases in Toronto’ data from the ‘Toronto Open Data’ website. The data contains gender, age group, source of infection, classification, etc. I want to create an analysis of this data to see how people mostly got infected, and what age group is most exposed to the viruses. I am also planning to find relationships between variable some of the variables that is important and interesting here but have not figure out how to do it. Most of the data is categorical variable so I will have to convert the variables to quantitative values.I will use statistical methods I have learned in STA304 course and try to make it simple and well organized. 
+# Abstract
+  COVID-19 is a big issue we are pacing in 2020, so the report is about analyzing the COVID-19 cases happening in Toronto.The data is collected by 'Toronto Open Data', and from this data we created graphs and visualizations to show COVID trends and how people are exposed to the diseases in our daily life situations. The report focuses on different age group, how people mostly get infected, see the differences between male and female and distributions of viruses in the neighbourhoods.
 
-```{r setup, include=FALSE, message=FALSE, warning=FALSE}
+
+## Keywords
+1. Ratio
+2. COVID-19
+3. data
+4. bar graph
+5. Trend
+
+
+# Introduction
+  People say we are living in a 'new normal', where everyone's lifestyle has changed after the big pandemic called COVID-19 viruses.COVID-19 is hurting economies, regardless of income level impacting whole global perspective (2020). People have lost jobs, and markets have closed and it has changed most of people's life style. So we are going to look at how people are exposed to this viruses, and view it in statistical methods. Using ‘About COVID-19 Cases in Toronto’ data from the ‘Toronto Open Data’ website. The data contains gender, source of infection, classification, Reported date, etc.The goal of this project is to create an analysis of this data to see how people mostly got infected, and see the different graphs and data to analyze the coronavirus in toronto right now.
+  
+  COVID-19 is a global pandemic but in this report we are going to look at local data, Toronto.Toronto had one lockdown in early 2020, and after the second wave Ontario government has decided to process the lockdown again. Coronavirus is spreading in very large number and it has been spreading constantly. So we are going to look at how people are getting infected and what is the ratio of male and female on getting infected.
+  
+  First we are going to clean the raw data, then select variables that are going to be used in the analysis. 
+  
+  
+# Data
+'About COVID-19' data is collected from 'Toronto Open Data' website. The raw data includes number of people that has been infected or still in infection, with many different categories, such as 'Assigned ID', 'Age Group', 'Client Gender', 'Source of Infection', etc. Since there are too many variables, and it makes it harder to look into the data, we cleaned some variables that were not as important as other variables. 
+
+
+The cleaned data look like as the following:
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 library(dplyr)
 library(tidyverse)
 library(ggthemes)
@@ -47,8 +68,18 @@ data <- reduced_data %>%
           Outcome,
          'Currently Hospitalized',
           source_of_infection)
+
+head(data)
 ```
 
+
+
+\    \    \ * Variable includes 'Age Group', 'Neighbourhood Name', 'Source of Infection', 'Classification', 'Episode Date', 'Reported Date', 'Client Gender', 'Outcome', and 'Currently Hospitalized.'
+
+
+# Model
+
+First we are going to create the ratio of different gender that are exposed to the virus. Since the variables in the data is categorical variables, and the status is already fixed as people who already reported as infected we are going to create bar graphs see the frequencies.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 source <- table(data$source_of_infection)
@@ -68,8 +99,14 @@ data %>%
 gender_ratio<- tibble(Gender = c("FEMALE", "MALE", "OTHER", "TRANSGENDER", "UNKNOWN"), 
        percentage = c(23497/n*100, 22222/n*100, 13/n*100, 8/n*100, 363/n*100))
 
-knitr::kable(gender_ratio)
+knitr::kable(gender_ratio, caption = "Client Gender ratio")
 
+```
+  The graph shows the total count of each gender, and the Table 1 shows the ratio(percentage) of the gender who have been infected.It shows that 51 percent of the infected gender are female and 48 percent is male, this shows that female are likely more exposed to the infection in Toronto.
+
+Then we will look at how people get infected mostly, and how easily people are exposed to the COVID-19 virus. Like the first method, we will create a bar graph of different source of infections. 
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 #Source of Infection
 data %>%
   ggplot(mapping = aes(x = source_of_infection, fill = source_of_infection)) + geom_bar() + 
@@ -80,12 +117,13 @@ data %>%
   theme(axis.text.x = element_text(angle = 60, hjust=1))
   
 
-
 ```
+The source of infection includes close contact, community, health care, travel, N/A Outbreak Associated, and unknown. Then we have created the COVID-19 graphs in Toronto to see the trend of the spread of the viruses.
 
 
+# Results
 
-
+This is the graph for COVID-19 trend in early 2020 to late 2020:
 ```{r echo=FALSE, message= FALSE}
 #Date
 data %>%
@@ -98,30 +136,51 @@ data %>%
 
 ```
 
+The COVID-19 trend graphs shows that during July to late September it had less than 50 counts, but starting October the COVID-19 has increased extremely, about 10 times more higher than July. If the graphs continues the virus will spread more, or this can be the peak of the spread and it can decrease if people be aware of it, and keep the social distancing.
+
 ```{r echo=FALSE}
 #OUTcome
 
-data%>%
-  count(Outcome)
 Fatal <- c(5441/length(data$Outcome), 1672/length(data$Outcome), 38990/length(data$Outcome))
 outcom_ratio <- tibble(Outcome = c("Active", "Fatal", "Resolved"), Ratio = Fatal)
 
-ggplot(data = data, mapping = aes(x = Outcome, fill = Outcome)) + geom_bar() + theme_grey()
-#barplot(outcom_ratio$Ratio, main ="Outcome ratio", ylab = "ratio", xlab = "Active | Fatal | Resolved")
-knitr::kable(outcom_ratio)
+ggplot(data = data, mapping = aes(x = Outcome, fill = Outcome)) + geom_bar() + labs(title = "Outcome of COVID-19", 
+                                                                                    x= "Outcome",
+                                                                                    y= "count") + theme_grey()
+knitr::kable(outcom_ratio, caption = "Outcome ratio")
 ```
+The Outcome of the Virus shows that about 85% of people who were infected are resolved, 12% are still in active and 4% of people are recorded fatal.This tells us that most of the people get healed from the COVID-19 in Toronto, and hospitality is doing a great job for people that are sick.
 
 
+# Summary
 
-Citation
+  The report explains different analysis of COVID-19. For gender, it is almost 5:5 ratio of male and female on infection. People get mostly infected by close contact and community meeting. Also people in health care services are most exposed to the virus so even if they prevent the chance, they can still get infected from the COVID-19. COVID-19 is currently spreading in a very fast speed. The lock down and vaccine can reduce the spread of the virus there are more possibility of going down. In appendix there are table for COVID-19 in each neighbourhoods for people that are interested for their neighbourhood.
+
+# Conclusion
+  It is important for people to keep the social distancing and follow the rules government has made. There are vaccine available in many country now, and by keeping the social distancing and preventing infections this will bring back our old normal. The pandemic has taken up whole 2020, and this will be the time for people to change and develop our weaknesses and needs.
+
+# Weakness & Next Steps:
+
+  The data only contains categorical variables and it only includes people that are already exposed to the COVID-19 virus, so finding relationship between the variables were not possible. For next step, we can collect data for people not exposed to the COVID-19 and find relationship between people's contact tracings.
+
+# References
+
+Impact of Coronavirus:
+1. Coronavirus: The economic impact – 10 July 2020. (n.d.). Retrieved December 17, 2020, from https://www.unido.org/stories/coronavirus-economic-impact-10-july-2020
 
 CSV Data:
-Open Data Dataset. (n.d.). Retrieved December 10, 2020, from https://open.toronto.ca/dataset/covid-19-cases-in-toronto/
+2. Open Data Dataset. (n.d.). Retrieved December 10, 2020, from https://open.toronto.ca/dataset/covid-19-cases-in-toronto/
 
 # Appendix
 
+
+
+
+
+
 ```{r echo=FALSE, message=FALSE}
 #Neighbourhood
+
 Neighbourhood <- table(data$`Neighbourhood Name`)
 knitr::kable(list(Neighbourhood[c(0:30)]), caption = "Covid-19 cases in different neighbourhoods")  %>% kable_styling(font_size = 9, position = "left")
 knitr::kable(list(Neighbourhood[c(31:61)]), caption = "Covid-19 cases in different neighbourhoods")  %>% kable_styling(font_size = 9, position = "left")
