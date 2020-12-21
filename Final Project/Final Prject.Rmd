@@ -37,6 +37,7 @@ library(ggthemes)
 library(knitr)
 library(kableExtra)
 
+Data <- read_csv("C:/Users/Woolim Kim/Documents/STA304/Final Project/COVID19 cases.csv")
 
 reduced_data <- Data %>%
   select('Age Group',
@@ -55,7 +56,12 @@ reduced_data <- reduced_data %>%
                                          `Source of Infection` =="N/A - Outbreak associated" ~ "N/A Outbreak associated",
                                          `Source of Infection` =="Healthcare" ~ "Healthcare",
                                          `Source of Infection` =="Community" ~ "Community",
-                                         `Source of Infection` =="Close contact" ~ "Close contact"))
+                                         `Source of Infection` =="Close contact" ~ "Close contact")) %>%
+   mutate(gender = case_when(`Client Gender` =="MALE" ~ 1,
+                             `Client Gender` =="FEMALE" ~ 0,
+                             `Client Gender` == "OTHER" ~ 0,
+                             `Client Gender` == "TRANSGENDER" ~ 0,
+                             `Client Gender` == "UNKNOWN" ~ 0)) #changing gender variable into binary outcome.
 
 data <- reduced_data %>%
   select('Age Group',
@@ -67,8 +73,8 @@ data <- reduced_data %>%
          'Client Gender',
           Outcome,
          'Currently Hospitalized',
-          source_of_infection)
-
+          source_of_infection,
+         gender)
 head(data)
 ```
 
@@ -76,7 +82,14 @@ head(data)
 
 \    \    \ * Variable includes 'Age Group', 'Neighbourhood Name', 'Source of Infection', 'Classification', 'Episode Date', 'Reported Date', 'Client Gender', 'Outcome', and 'Currently Hospitalized.'
 
+```{r echo=FALSE, message=FALSE}
+#1 is male, 0 is female
+#making glm for gender and other factors relationship.
+model <- glm(data$gender ~ as.factor(source_of_infection) + as.factor(`Age Group`),  data = data, family = "binomial")
 
+```
+
+  
 # Model
 
 First we are going to create the ratio of different gender that are exposed to the virus. Since the variables in the data is categorical variables, and the status is already fixed as people who already reported as infected we are going to create bar graphs see the frequencies.
@@ -100,7 +113,6 @@ gender_ratio<- tibble(Gender = c("FEMALE", "MALE", "OTHER", "TRANSGENDER", "UNKN
        percentage = c(23497/n*100, 22222/n*100, 13/n*100, 8/n*100, 363/n*100))
 
 knitr::kable(gender_ratio, caption = "Client Gender ratio")
-
 ```
   The graph shows the total count of each gender, and the Table 1 shows the ratio(percentage) of the gender who have been infected.It shows that 51 percent of the infected gender are female and 48 percent is male, this shows that female are likely more exposed to the infection in Toronto.
 
